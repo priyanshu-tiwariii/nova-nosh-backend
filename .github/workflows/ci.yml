@@ -1,0 +1,48 @@
+# Name of the workflow
+name: Build, Test, and Push Docker Image
+
+# Trigger: Run on pushes to the main branch
+on:
+  push:
+    branches: [ "main" ] 
+
+# Job definition
+jobs:
+  build_test_push:
+    # Use the latest Ubuntu runner
+    runs-on: ubuntu-latest 
+
+    # Sequence of steps
+    steps:
+      # 1. Get the code from the repository
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      # 2. Set up the correct Node.js version
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18' 
+
+      # 3. Install ALL dependencies (including devDependencies for testing)
+      - name: Install Dependencies
+        run: npm ci 
+
+      # 4. Run the automated tests
+      - name: Run tests
+        run: npm test 
+
+      # 5. Log in to Docker Hub (only runs if tests passed)
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }} 
+          password: ${{ secrets.DOCKERHUB_TOKEN }}    
+
+      # 6. Build and push the Docker image (only runs if tests passed)
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: . 
+          push: true  
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/nova-nosh-backend:latest, ${{ secrets.DOCKERHUB_USERNAME }}/nova-nosh-backend:${{ github.sha }}
