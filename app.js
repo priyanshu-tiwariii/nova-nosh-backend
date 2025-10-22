@@ -2,9 +2,8 @@ import express from 'express';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 
-const app = express();
 
-// Middleware
+const app = express();
 app.use(express.json());
 app.use(cors());
 app.use(cookieParser());
@@ -22,7 +21,7 @@ import contactRoute from './routes/contact.routes.js';
 
 // Use routes
 app.use('/api/test', (req, res) => {
-  res.send('API is working properly');
+  res.status(200).json({ message: "API is working properly" });
 });
 app.use('/api/auth', authRoute);
 app.use('/api/add', addressRoute);
