@@ -1,0 +1,19 @@
+# Git and Node files
+.git
+.gitignore
+node_modules
+
+# Frontend code (we are deploying this separately)
+client
+
+# Docker files
+Dockerfile
+.dockerignore
+
+# Environment files
+.env
+
+# IDE and OS files
+.idea
+.vscode
+*.DS_Store
